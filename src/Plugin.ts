@@ -1,3 +1,4 @@
+import { boolean } from 'boolean';
 import _ from 'lodash';
 import Serverless from 'serverless';
 
@@ -37,10 +38,12 @@ export class Plugin {
 
     const value = (() => {
       switch (address) {
-        case 'params':
-          return params;
+        case 'boolean':
+          return boolean(params[0]);
         case 'ifelse':
           return params[0] ? params[1] : params[2];
+        case 'params':
+          return params;
         default:
           // @ts-expect-error - unable to characterize params with dynamic method name
           // eslint-disable-next-line @typescript-eslint/no-unsafe-call

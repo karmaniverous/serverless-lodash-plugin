@@ -10,7 +10,7 @@ Unfortunately...
 - Environment variables are ONLY delivered into `serverless.yml` as strings.
 - `provisionedConcurrency` HAS to be a number.
 
-Bollocks. And while `serverless.yml` DOES support a few inline functions (like [`strToBool`](https://www.serverless.com/framework/docs/guides/variables#read-string-variable-values-as-boolean-values)), it won't parse an integer from a string.
+Bollocks. And while `serverless.yml` DOES support a few inline functions (like [`strToBool`](https://www.serverless.com/framework/docs/guides/variables#read-string-variable-values-as-boolean-values)), it won't parse an integer from a string. **P.S. Also, `strToBool` doesn't seem to work very well.** 🙄 Use `toBoolean` as described below instead!
 
 Double bollocks. You can see other devs crying about the same problem [here](https://forum.serverless.com/t/problems-reading-in-integer-or-null-from-env-file-trying-to-disabled-or-set-provision-concurrency-for-development-or-production-stage/12956) and [here](https://github.com/serverless/serverless/issues/10791).
 
@@ -50,8 +50,9 @@ someKey: ${lodash(<param1>, <param2>, ...):<functionName>}
 
 `<functionName>` can be:
 
-- `params` (converts params to an array)
+- `boolean` (convert [lots of things](https://www.npmjs.com/package/boolean) to a boolean)
 - `ifelse` (ternary function)
+- `params` (converts params to an array)
 - Any [lodash function](https://lodash.com/docs/4.17.15).
 
 See below for examples.
@@ -79,10 +80,11 @@ meToo: ${_(1, 2, ${_(${env:THREE})parseInt}):sum} # 6
 iWantAnArray: ${lodash(${lodash(1, 2, 3):params}, _.multiply):map} # [0, 2, 6]
 # Equivalent to _.map([1, 2, 3], _.multiply)
 
-# AT LAST! strToBool returns a boolean, but we need a number.
-# `ifelse` is a ternary function.
-provisionedConcurrency: ${lodash(strToBool(${env:USE_PROVISIONED_CONCURRENCY}), 1, 0):ifelse}
-# Equivalent to strToBool(process.env.USE_PROVISIONED_CONCURRENCY) ? 1 : 0
+# AT LAST!
+# boolean converts lots of things to a boolean.
+# ifelse is a ternary function.
+provisionedConcurrency: ${lodash(${lodash(${env:USE_PROVISIONED_CONCURRENCY}):boolean}, 1, 0):ifelse}
+# Equivalent to boolean(process.env.USE_PROVISIONED_CONCURRENCY) ? 1 : 0
 ```
 
 That's it. Go nuts!

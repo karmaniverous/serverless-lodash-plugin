@@ -4,6 +4,7 @@
     "url": "https://github.com/karmaniverous/serverless-lodash-plugin/issues"
   },
   "dependencies": {
+    "boolean": "^3.2.0",
     "lodash": "^4.17.21",
     "serverless": "^4.1.12"
   },
