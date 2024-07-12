@@ -6,31 +6,33 @@ Easy, right?
 
 Unfortunately...
 
-- I needed to deliver that value is as an environment variable.
+- I needed to deliver that value as an environment variable.
 - Environment variables are ONLY delivered into `serverless.yml` as strings.
 - `provisionedConcurrency` HAS to be a number.
 
-Bollocks. And while `serverless.yml` DOES support a few inline functions (like [`strToBool`](https://www.serverless.com/framework/docs/guides/variables#read-string-variable-values-as-boolean-values)), it won't parse an integer.
+Bollocks. And while `serverless.yml` DOES support a few inline functions (like [`strToBool`](https://www.serverless.com/framework/docs/guides/variables#read-string-variable-values-as-boolean-values)), it won't parse an integer from a string.
 
 Double bollocks. You can see other devs crying about the same problem [here](https://forum.serverless.com/t/problems-reading-in-integer-or-null-from-env-file-trying-to-disabled-or-set-provision-concurrency-for-development-or-production-stage/12956) and [here](https://github.com/serverless/serverless/issues/10791).
 
-Hence this plugin, which exposes the entire [`lodash`](https://lodash.com/) library (plus some other goodies) as variables in `serverless.yml`. It's like solving a thumbtack problem with a sledgehammer, but whatevs.
+Hence this plugin, which exposes the entire [`lodash`](https://lodash.com/) library (plus some other goodies) as variables in `serverless.yml`.
+
+I mean why use a fly swatter when you can use a bazooka, right? 🤓
 
 ## Why is this even an issue?
 
-If you think about it, the Serverless Framework applies two independeny processing layers to `serverless.yml`:
+If you think about it, the Serverless Framework applies two independent processing layers to `serverless.yml`:
 
-- It parses the file into JSON, validates the incoming data against its schema, and applies serverless-specific variable expansion.
+1. It parses the file into JSON, applies Serverless-specific variable expansion, and validates the result against its config schema.
 
-- It passes the result to provider-specific packaging logic (like AWS CloudFormation), which applies its own kind of logic.
+1. It passes the result to provider-specific packaging logic (like AWS CloudFormation), which does its own provider-specific thing.
 
-So if you try to use an AWS `!If` function to deal with the `provisionedConcurrency`-as-string issue, you're going to fail, because the environment variable containing the number will parse as a string and fail the first schema-validation step BEFORE your `!If` function gets a chance at it.
+So if you try to use an AWS `!If` function to deal with the `provisionedConcurrency`-as-string issue, you're going to fail, because the environment variable containing the number will parse as a string and fail the first schema-validation step BEFORE your `!If` function gets a chance at it!
 
-This plugin works because is functions run during the initial variable-expansion phase, BEFORE your YAML is validated against the Serverless schema. So as long as your `lodash` functions resolve to valid YAML, you're good to go.
+This plugin works because is functions run during the initial variable-expansion phase, BEFORE your config is validated against the Serverless schema. So as long as your `lodash` functions resolve to a valid `serverless.yml` config, you're good to go!
 
 ## Sign me up!
 
-Install the plugin with:
+Thought so. 🤣 Install the plugin with:
 
 ```bash
 npm i -D @karmaniverous/serverless-lodash-plugin
@@ -56,7 +58,7 @@ See below for examples.
 
 `<param1>`, `<param2>`, etc. can be just about anything. [Raise an issue](https://github.com/karmaniverous/serverless-lodash-plugin/issues) if you figure out how to break it!
 
-Yes, putting the function name after the params is a little weird. But Serverless parses the stuff in the parentheses as an array, so it makes sense. And [all the usual rules](https://www.serverless.com/framework/docs/guides/variables) apply with respect to Serverless variable parsing.
+Yes, putting the function name after the params is a little weird. But Serverless parses the stuff in the parentheses as an array, so internally it makes sense. And [all the usual rules](https://www.serverless.com/framework/docs/guides/variables) apply with respect to Serverless variable parsing.
 
 ## Some examples
 
@@ -73,6 +75,7 @@ meToo: ${_(1, 2, ${_(${env:THREE})parseInt}):sum} # 6
 
 # The 'params' function converts the params into an array.
 # You can pass a lodash function as a param, but only one level deep!
+# Each expression & sub-expression has to returns a VALUE, not a FUNCTION.
 iWantAnArray: ${lodash(${lodash(1, 2, 3):params}, _.multiply):map} # [0, 2, 6]
 # Equivalent to _.map([1, 2, 3], _.multiply)
 
