@@ -28,7 +28,7 @@ If you think about it, the Serverless Framework applies two independent processi
 
 So if you try to use an AWS `!If` function to deal with the `provisionedConcurrency`-as-string issue, you're going to fail, because the environment variable containing the number will parse as a string and fail the first schema-validation step BEFORE your `!If` function gets a chance at it!
 
-This plugin works because is functions run during the initial variable-expansion phase, BEFORE your config is validated against the Serverless schema. So as long as your `lodash` functions resolve to a valid `serverless.yml` config, you're good to go!
+This plugin works because its functions run during the initial variable-expansion phase, BEFORE your config is validated against the Serverless schema. So as long as your `lodash` functions resolve to a valid `serverless.yml` config, you're good to go!
 
 ## Sign me up!
 
@@ -71,11 +71,11 @@ iWantANumber: ${lodash(1, 2, 3):sum} # 6
 # Equivalent to _.sum([1, 2, 3])
 
 # Assuming env var THREE = '3'
-meToo: ${_(1, 2, ${_(${env:THREE})parseInt}):sum} # 6
+meToo: ${lodash(1, 2, ${lodash(${env:THREE})parseInt}):sum} # 6
 # Equivalent to _.sum([1, 2, parseInt(process.env.THREE)])
 
 # The 'params' function converts the params into an array.
-# You can pass a lodash function as a param, but only one level deep!
+# You can pass a lodash function reference like '_.multiply' as a param.
 # Each expression & sub-expression has to returns a VALUE, not a FUNCTION.
 iWantAnArray: ${lodash(${lodash(1, 2, 3):params}, _.multiply):map} # [0, 2, 6]
 # Equivalent to _.map([1, 2, 3], _.multiply)
