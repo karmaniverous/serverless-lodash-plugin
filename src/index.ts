@@ -1,1 +1,2 @@
-export { foo } from './foo';
+import { Plugin } from './Plugin';
+export default Plugin;

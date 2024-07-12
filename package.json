@@ -1,32 +1,28 @@
 {
   "author": "Jason Williscroft",
-  "bin": {
-    "mycli": "./dist/mycli.cli.mjs"
-  },
   "bugs": {
-    "url": "https://github.com/karmaniverous/npm-package-template-ts/issues"
+    "url": "https://github.com/karmaniverous/serverless-lodash-plugin/issues"
   },
   "dependencies": {
-    "commander": "^12.1.0",
-    "tslog": "^4.9.3"
+    "lodash": "^4.17.21",
+    "serverless": "^4.1.12"
   },
-  "description": "A feature-rich NPM package template for TypeScript projects.",
+  "description": "Exposes the full Lodash library for use inside serverless.yml.",
   "devDependencies": {
-    "@commander-js/extra-typings": "^12.1.0",
     "@eslint/js": "^9.6.0",
     "@rollup/plugin-alias": "^5.1.0",
     "@rollup/plugin-commonjs": "^26.0.1",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^15.2.3",
-    "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/chai": "^4.3.16",
     "@types/eslint__js": "^8.42.3",
     "@types/eslint-config-prettier": "^6.11.3",
     "@types/eslint-plugin-mocha": "^10.4.0",
-    "@types/fs-extra": "^11.0.4",
+    "@types/lodash": "^4.17.6",
     "@types/mocha": "^10.0.7",
     "@types/node": "^20.14.9",
+    "@types/serverless": "^3.12.22",
     "auto-changelog": "^2.4.0",
     "chai": "^5.1.1",
     "cross-env": "^7.0.3",
@@ -35,7 +31,6 @@
     "eslint-plugin-mocha": "^10.4.3",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "eslint-plugin-tsdoc": "^0.2.17",
-    "fs-extra": "^11.2.0",
     "jsdom-global": "^3.0.2",
     "knip": "^5.23.3",
     "lefthook": "^1.6.18",
@@ -67,23 +62,15 @@
   "files": [
     "dist"
   ],
-  "homepage": "https://github.com/karmaniverous/npm-package-template-ts#readme",
+  "homepage": "https://github.com/karmaniverous/serverless-lodash-plugin#readme",
   "keywords": [
-    "chai",
-    "eslint",
-    "lefthook",
-    "mocha",
-    "npm",
-    "nyc",
-    "prettier",
-    "rollup",
-    "template",
-    "typescript"
+    "lodash",
+    "serverless-framework"
   ],
   "license": "BSD-3-Clause",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
-  "name": "@karmaniverous/npm-package-template-ts",
+  "name": "@karmaniverous/serverless-lodash-plugin",
   "publishConfig": {
     "access": "public"
   },
@@ -114,7 +101,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/karmaniverous/npm-package-template-ts.git"
+    "url": "git+https://github.com/karmaniverous/serverless-lodash-plugin.git"
   },
   "scripts": {
     "build": "rimraf dist && rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
