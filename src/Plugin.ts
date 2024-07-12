@@ -24,8 +24,6 @@ export class Plugin {
   }
 
   private resolveLodash({ address, params = [] }: ResolveInput) {
-    console.info({ address, params });
-
     params = params.map((param) => {
       if (!_.isString(param)) return param;
 

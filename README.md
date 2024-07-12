@@ -12,17 +12,18 @@ Unfortunately...
 
 Bollocks. And while `serverless.yml` DOES support a few inline functions (like `parseBool`), it won't parse an integer.
 
-Double bollocks.
+Double bollocks. You can see other devs crying about the same problem [here](https://forum.serverless.com/t/problems-reading-in-integer-or-null-from-env-file-trying-to-disabled-or-set-provision-concurrency-for-development-or-production-stage/12956) and [here](https://github.com/serverless/serverless/issues/10791).
 
-Hence this plugin, which exposes the entire `lodash` library (plus some other goodies) as variables in `serverless.yml`.
+Hence this plugin, which exposes the entire [`lodash`](https://lodash.com/) library (plus some other goodies) as variables in `serverless.yml`. It's like solving a thumbtack problem with a sledgehammer, but whatevs.
 
 In general, use it like this:
 
 ```yml
 plugins:
-  - serverless-lodash-plugin
+  - '@karmaniverous/serverless-lodash-plugin'
 
 someKey: ${lodash(<param1>, <param2>, ...):<functionName>}
+# Equivalent to _.<functionName>(<param1>, <param2>, ...)
 ```
 
 Yes, putting the function name after the params is a little weird. But serverless parses the stuff in the parentheses as an array, so it makes sense. And all the usual rules apply with respect to Serverless variable parsing.
@@ -31,7 +32,7 @@ Some examples:
 
 ```yml
 plugins:
-  - serverless-lodash-plugin
+  - '@karmaniverous/serverless-lodash-plugin'
 
 iWantANumber: ${lodash(1, 2, 3):sum} # 6
 # Equivalent to _.sum([1, 2, 3])
