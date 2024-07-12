@@ -10,7 +10,7 @@ Unfortunately...
 - Environment variables are ONLY delivered into `serverless.yml` as strings.
 - `provisionedConcurrency` HAS to be a number.
 
-Bollocks. And while `serverless.yml` DOES support a few inline functions (like [`strToBool`](https://www.serverless.com/framework/docs/guides/variables#read-string-variable-values-as-boolean-values)), it won't parse an integer from a string. **P.S. Also, `strToBool` doesn't seem to work very well.** 🙄 Use `toBoolean` as described below instead!
+Bollocks. And while `serverless.yml` DOES support a few inline functions (like [`strToBool`](https://www.serverless.com/framework/docs/guides/variables#read-string-variable-values-as-boolean-values)), it won't parse an integer from a string. **P.S. Also, `strToBool` doesn't seem to work very well.** 🙄 Use `boolean` as described below instead!
 
 Double bollocks. You can see other devs crying about the same problem [here](https://forum.serverless.com/t/problems-reading-in-integer-or-null-from-env-file-trying-to-disabled-or-set-provision-concurrency-for-development-or-production-stage/12956) and [here](https://github.com/serverless/serverless/issues/10791).
 
