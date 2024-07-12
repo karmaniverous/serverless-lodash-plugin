@@ -1,0 +1,131 @@
+{
+  "author": "Jason Williscroft",
+  "bin": {
+    "mycli": "./dist/mycli.cli.mjs"
+  },
+  "bugs": {
+    "url": "https://github.com/karmaniverous/npm-package-template-ts/issues"
+  },
+  "dependencies": {
+    "commander": "^12.1.0",
+    "tslog": "^4.9.3"
+  },
+  "description": "A feature-rich NPM package template for TypeScript projects.",
+  "devDependencies": {
+    "@commander-js/extra-typings": "^12.1.0",
+    "@eslint/js": "^9.6.0",
+    "@rollup/plugin-alias": "^5.1.0",
+    "@rollup/plugin-commonjs": "^26.0.1",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@types/chai": "^4.3.16",
+    "@types/eslint__js": "^8.42.3",
+    "@types/eslint-config-prettier": "^6.11.3",
+    "@types/eslint-plugin-mocha": "^10.4.0",
+    "@types/fs-extra": "^11.0.4",
+    "@types/mocha": "^10.0.7",
+    "@types/node": "^20.14.9",
+    "auto-changelog": "^2.4.0",
+    "chai": "^5.1.1",
+    "cross-env": "^7.0.3",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-mocha": "^10.4.3",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "eslint-plugin-tsdoc": "^0.2.17",
+    "fs-extra": "^11.2.0",
+    "jsdom-global": "^3.0.2",
+    "knip": "^5.23.3",
+    "lefthook": "^1.6.18",
+    "mocha": "^10.6.0",
+    "nyc": "^17.0.0",
+    "prettier": "^3.3.2",
+    "release-it": "^17.4.1",
+    "rimraf": "^5.0.7",
+    "rollup": "^4.18.0",
+    "rollup-plugin-dts": "^6.1.1",
+    "source-map-support": "^0.5.21",
+    "ts-node": "^10.9.2",
+    "tslib": "^2.6.3",
+    "typescript": "^5.5.3",
+    "typescript-eslint": "^7.15.0"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "homepage": "https://github.com/karmaniverous/npm-package-template-ts#readme",
+  "keywords": [
+    "chai",
+    "eslint",
+    "lefthook",
+    "mocha",
+    "npm",
+    "nyc",
+    "prettier",
+    "rollup",
+    "template",
+    "typescript"
+  ],
+  "license": "BSD-3-Clause",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "name": "@karmaniverous/npm-package-template-ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "release-it": {
+    "git": {
+      "changelog": "npx auto-changelog --stdout --commit-limit false -u --template https://raw.githubusercontent.com/release-it/release-it/main/templates/changelog-compact.hbs",
+      "commitMessage": "chore: release v${version}",
+      "requireBranch": "main"
+    },
+    "github": {
+      "release": true
+    },
+    "hooks": {
+      "after:init": [
+        "npm run lint",
+        "npm run test",
+        "npm run build"
+      ],
+      "after:release": [
+        "git switch -c release/${version}",
+        "git push -u origin release/${version}",
+        "git switch ${branchName}"
+      ]
+    },
+    "npm": {
+      "publish": true
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/karmaniverous/npm-package-template-ts.git"
+  },
+  "scripts": {
+    "build": "rimraf dist && rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
+    "knip": "knip",
+    "lint": "eslint src/** && prettier -c src",
+    "lint:fix": "eslint --fix src/** && prettier --write src",
+    "release": "release-it",
+    "release:pre": "release-it --no-git.requireBranch --github.prerelease --preRelease",
+    "test": "cross-env LOG_LEVEL=debug nyc mocha"
+  },
+  "type": "module",
+  "types": "dist/index.d.ts",
+  "version": "0.5.2"
+}
