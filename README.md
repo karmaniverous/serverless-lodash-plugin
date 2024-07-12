@@ -16,7 +16,13 @@ Double bollocks. You can see other devs crying about the same problem [here](htt
 
 Hence this plugin, which exposes the entire [`lodash`](https://lodash.com/) library (plus some other goodies) as variables in `serverless.yml`. It's like solving a thumbtack problem with a sledgehammer, but whatevs.
 
-In general, use it like this:
+Install the plugin with:
+
+```bash
+npm i -D @karmaniverous/serverless-lodash-plugin
+```
+
+In general, use it like this in your `serverless.yml` file:
 
 ```yml
 plugins:
@@ -26,7 +32,7 @@ someKey: ${lodash(<param1>, <param2>, ...):<functionName>}
 # Equivalent to _.<functionName>(<param1>, <param2>, ...)
 ```
 
-Yes, putting the function name after the params is a little weird. But serverless parses the stuff in the parentheses as an array, so it makes sense. And all the usual rules apply with respect to Serverless variable parsing.
+Yes, putting the function name after the params is a little weird. But Serverless parses the stuff in the parentheses as an array, so it makes sense. And [all the usual rules](https://www.serverless.com/framework/docs/guides/variables) apply with respect to Serverless variable parsing.
 
 Some examples:
 
