@@ -35,10 +35,19 @@ export class Plugin {
       else return param;
     });
 
-    const value =
-      // @ts-expect-error - unable to characterize params with dynamic method name
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      address === 'params' ? params : (_[address](...params) as unknown);
+    const value = (() => {
+      switch (address) {
+        case 'params':
+          return params;
+        case 'ifelse':
+          return params[0] ? params[1] : params[2];
+        default:
+          // @ts-expect-error - unable to characterize params with dynamic method name
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+          if (address in _) return _[address](...params) as unknown;
+          else throw new Error(`Unknown lodash method: ${address}`);
+      }
+    })();
 
     // console.log({ address, params, value });
 
