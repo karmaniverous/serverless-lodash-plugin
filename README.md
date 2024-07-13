@@ -55,7 +55,7 @@ someKey: ${lodash(<param1>, <param2>, ...):<functionName>}
 - `params` — converts params to an array
 - Any [lodash function](https://lodash.com/docs/4.17.15).
 
-`<param1>`, `<param2>`, etc. can be just about anything. [Raise an issue](https://github.com/karmaniverous/serverless-lodash-plugin/issues) if you figure out how to break it!
+`<param1>`, `<param2>`, etc. can be just about anything, including a reference to a `lodash` function like `_.parseInt`. [Raise an issue](https://github.com/karmaniverous/serverless-lodash-plugin/issues) if you figure out how to break it!
 
 Any `undefined` output will be converted to `NULL` to avoid breaking Serverless.
 
@@ -71,8 +71,8 @@ iWantANumber: ${lodash(1, 2, 3):sum} # 6
 # Equivalent to _.sum([1, 2, 3])
 
 # Assuming env var THREE = '3'
-meToo: ${lodash(1, 2, ${lodash(${env:THREE})parseInt}):sum} # 6
-# Equivalent to _.sum([1, 2, parseInt(process.env.THREE)])
+meToo: ${lodash(1, 2, ${lodash(${env:THREE}):parseInt}):sum} # 6
+# Equivalent to _.sum([1, 2, _.parseInt(process.env.THREE)])
 
 # The 'params' function converts the params into an array.
 # You can pass a lodash function reference like '_.multiply' as a param.
