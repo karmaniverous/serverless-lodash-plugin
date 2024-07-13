@@ -1,6 +1,6 @@
 import { boolean } from 'boolean';
 import _ from 'lodash';
-import Serverless from 'serverless';
+import type Serverless from 'serverless';
 
 import { logger } from './util/logger';
 
