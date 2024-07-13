@@ -98,7 +98,7 @@ To prove it to yourself:
 
 1. Clone this repo
 
-1. Run `npx mocha -f lodash\ pc\ off\ weirdness`
+1. Run `npx mocha -g "lodash pc off weirdness"`
 
 1. Watch the console.
 
