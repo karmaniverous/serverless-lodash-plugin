@@ -6,3 +6,5 @@ coverage/
 dist/
 esm/
 node_modules/
+.serverless/
+test/serverless/serverless.yml
