@@ -98,7 +98,7 @@ To prove it to yourself:
 
 1. Clone this repo
 
-1. Run `nlx mocha -f lodash\ pc\ off\ weirdness`
+1. Run `npx mocha -f lodash\ pc\ off\ weirdness`
 
 1. Watch the console.
 
@@ -114,13 +114,13 @@ DEBUG serverless-lodash-plugin {
 }
 ```
 
-If you were paying atention above, the `provisionedConcurrency setting SHOULD look like:
+If you were paying atention above, the `provisionedConcurrency` setting SHOULD look like:
 
 ```yml
 provisionedConcurrency: ${lodash(${lodash(${env:USE_PROVISIONED_CONCURRENCY}):boolean}, 1, 0):ifelse}
 ```
 
-But when we do that, Serverless reads the `0` as a `NULL` and the `ifelse` function returns `NULL`, which is an invalid `provisionedConcurrency` value, and `serverless package` throws an error.
+But when we do that and `USE_PROVISIONED_CONCURRENCY` is `false`, Serverless reads the `0` as a `NULL` and the `ifelse` function returns `NULL`, which is an invalid `provisionedConcurrency` value, and `serverless package` throws an error.
 
 So instead we are using:
 
