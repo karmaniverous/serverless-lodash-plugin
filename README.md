@@ -138,6 +138,10 @@ provisionedConcurrency: ${lodash(${lodash(${env:USE_PROVISIONED_CONCURRENCY}):bo
 
 That's defensive enough (it'll still work when Serverless fixes the issue) and just a tad more readable. It's the version I use in my projects.
 
+If you run into odd failures of your `lodash` logic, try running `serverless package` with `LOG_LEVEL=debug` set in your environment. It'll show you the same `lodash` function logging as pictured above and help you understand what's happening.
+
+If you learn anything new, please raise an issue and I'll document it here!
+
 ---
 
 See more great templates and other tools on
