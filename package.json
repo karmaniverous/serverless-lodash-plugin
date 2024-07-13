@@ -5,8 +5,7 @@
   },
   "dependencies": {
     "boolean": "^3.2.0",
-    "lodash": "^4.17.21",
-    "serverless": "^4.1.12"
+    "lodash": "^4.17.21"
   },
   "description": "Exposes the full Lodash library for use inside serverless.yml.",
   "devDependencies": {
@@ -20,6 +19,7 @@
     "@types/eslint__js": "^8.42.3",
     "@types/eslint-config-prettier": "^6.11.3",
     "@types/eslint-plugin-mocha": "^10.4.0",
+    "@types/fs-extra": "^11.0.4",
     "@types/lodash": "^4.17.6",
     "@types/mocha": "^10.0.7",
     "@types/node": "^20.14.9",
@@ -32,21 +32,26 @@
     "eslint-plugin-mocha": "^10.4.3",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "eslint-plugin-tsdoc": "^0.2.17",
+    "execa": "^9.3.0",
+    "fs-extra": "^11.2.0",
     "jsdom-global": "^3.0.2",
     "knip": "^5.23.3",
     "lefthook": "^1.6.18",
     "mocha": "^10.6.0",
     "nyc": "^17.0.0",
+    "pkg-dir": "^8.0.0",
     "prettier": "^3.3.2",
     "release-it": "^17.4.1",
     "rimraf": "^5.0.7",
     "rollup": "^4.18.0",
     "rollup-plugin-dts": "^6.1.1",
+    "serverless": "=3",
     "source-map-support": "^0.5.21",
     "ts-node": "^10.9.2",
     "tslib": "^2.6.3",
     "typescript": "^5.5.3",
-    "typescript-eslint": "^7.15.0"
+    "typescript-eslint": "^7.15.0",
+    "yaml": "^2.4.5"
   },
   "exports": {
     ".": {

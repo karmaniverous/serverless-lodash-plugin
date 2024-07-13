@@ -1,0 +1,13 @@
+service: test
+frameworkVersion: '3'
+
+plugins:
+  - ../../dist/index.cjs
+
+provider:
+  name: aws
+
+functions:
+  foo:
+    handler: index.handler
+    name: foo
