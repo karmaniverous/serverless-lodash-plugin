@@ -50,14 +50,14 @@ someKey: ${lodash(<param1>, <param2>, ...):<functionName>}
 
 `<functionName>` can be:
 
-- `boolean` (convert [lots of things](https://www.npmjs.com/package/boolean) to a boolean)
-- `ifelse` (ternary function)
-- `params` (converts params to an array)
+- `boolean` — convert [lots of things](https://www.npmjs.com/package/boolean) to a boolean
+- `ifelse` — ternary function with params (condition, trueValue, falseValue)
+- `params` — converts params to an array
 - Any [lodash function](https://lodash.com/docs/4.17.15).
 
-See below for examples.
-
 `<param1>`, `<param2>`, etc. can be just about anything. [Raise an issue](https://github.com/karmaniverous/serverless-lodash-plugin/issues) if you figure out how to break it!
+
+Any `undefined` output will be converted to `NULL` to avoid breaking Serverless.
 
 Yes, putting the function name after the params is a little weird. But Serverless parses the stuff in the parentheses as an array, so internally it makes sense. And [all the usual rules](https://www.serverless.com/framework/docs/guides/variables) apply with respect to Serverless variable parsing.
 
@@ -83,11 +83,60 @@ iWantAnArray: ${lodash(${lodash(1, 2, 3):params}, _.multiply):map} # [0, 2, 6]
 # AT LAST!
 # boolean converts lots of things to a boolean.
 # ifelse is a ternary function.
-provisionedConcurrency: ${lodash(${lodash(${env:USE_PROVISIONED_CONCURRENCY}):boolean}, 1, 0):ifelse}
+provisionedConcurrency: ${lodash(${lodash(${env:USE_PROVISIONED_CONCURRENCY}):boolean}, 1, 0):ifelse, 0}
 # Equivalent to boolean(process.env.USE_PROVISIONED_CONCURRENCY) ? 1 : 0
+# SEE THE WEIRDNESS ALERT BELOW!
 ```
 
-That's it. Go nuts!
+## Weirdness Alert!
+
+Serverless—NOT this plugin!—reads the `0` in `${lodash(${env:USE_PROVISIONED_CONCURRENCY}):boolean}, 1, 0)` as a `NULL` rather than a `0`.
+
+**I know.** 🙄
+
+To prove it to yourself:
+
+1. Clone this repo
+
+1. Run `nlx mocha -f lodash\ pc\ off\ weirdness`
+
+1. Watch the console.
+
+```text
+DEBUG serverless-lodash-plugin {
+  address: 'ifelse',
+  params: [
+    false,
+    1,
+    null <-- COMING STRAIGHT FROM SERVERLESS & SHOULD BE 0!
+  ],
+  value: null
+}
+```
+
+If you were paying atention above, the `provisionedConcurrency setting SHOULD look like:
+
+```yml
+provisionedConcurrency: ${lodash(${lodash(${env:USE_PROVISIONED_CONCURRENCY}):boolean}, 1, 0):ifelse}
+```
+
+But when we do that, Serverless reads the `0` as a `NULL` and the `ifelse` function returns `NULL`, which is an invalid `provisionedConcurrency` value, and `serverless package` throws an error.
+
+So instead we are using:
+
+```yml
+provisionedConcurrency: ${lodash(${lodash(${env:USE_PROVISIONED_CONCURRENCY}):boolean}, 1, 0):ifelse, 0}
+```
+
+... which coalesces the `NULL` returned by `ifelse` function back to a `0`, and everything works.
+
+BUT... we could also just embrace the weirdness and declaratively pass the NULL by leaving off the `, 0`, like this:
+
+```yml
+provisionedConcurrency: ${lodash(${lodash(${env:USE_PROVISIONED_CONCURRENCY}):boolean}, 1):ifelse, 0}
+```
+
+That's defensive enough (it'll still work when Serverless fixes the issue) and just a tad more readable. It's the version I use in my projects.
 
 ---
 

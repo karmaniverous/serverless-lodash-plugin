@@ -2,6 +2,8 @@ import { boolean } from 'boolean';
 import _ from 'lodash';
 import Serverless from 'serverless';
 
+import { logger } from './util/logger';
+
 interface ResolveInput {
   address: string;
   params?: unknown[];
@@ -36,23 +38,24 @@ export class Plugin {
       else return param;
     });
 
-    const value = (() => {
-      switch (address) {
-        case 'boolean':
-          return boolean(params[0]);
-        case 'ifelse':
-          return params[0] ? params[1] : params[2];
-        case 'params':
-          return params;
-        default:
-          // @ts-expect-error - unable to characterize params with dynamic method name
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-          if (address in _) return _[address](...params) as unknown;
-          else throw new Error(`Unknown lodash method: ${address}`);
-      }
-    })();
+    const value =
+      (() => {
+        switch (address) {
+          case 'boolean':
+            return boolean(params[0]);
+          case 'ifelse':
+            return params[0] ? params[1] : params[2];
+          case 'params':
+            return params;
+          default:
+            // @ts-expect-error - unable to characterize params with dynamic method name
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+            if (address in _) return _[address](...params) as unknown;
+            else throw new Error(`Unknown lodash method: ${address}`);
+        }
+      })() ?? null;
 
-    // console.log({ address, params, value });
+    logger.debug({ address, params, value });
 
     return { value };
   }

@@ -10,7 +10,7 @@ import yaml from 'yaml';
 const cwd = resolve((await packageDirectory()) ?? './', 'test/serverless');
 
 // config execa instance
-const $ = $$({ cwd });
+const $ = $$({ cwd, env: { LOG_LEVEL: 'debug' }, stdio: 'inherit' });
 
 // write config to serverless directory
 const writeConfig = async (config: unknown) => {
@@ -35,7 +35,7 @@ describe('Plugin', function () {
     )) as object;
   });
 
-  it('base config', async function () {
+  it('base', async function () {
     await writeConfig(config);
     await $`npx serverless package`;
     const pkg = await loadPackage();
@@ -45,7 +45,7 @@ describe('Plugin', function () {
     ).to.equal('foo');
   });
 
-  it('provisionedConcurrency on (static)', async function () {
+  it('static pc on', async function () {
     _.set(config, 'functions.foo.provisionedConcurrency', 1);
 
     await writeConfig(config);
@@ -60,8 +60,92 @@ describe('Plugin', function () {
     ).to.equal(1);
   });
 
-  it('provisionedConcurrency off (static)', async function () {
+  it('static pc off', async function () {
     _.set(config, 'functions.foo.provisionedConcurrency', 0);
+
+    await writeConfig(config);
+    await $`npx serverless package`;
+    const pkg = await loadPackage();
+
+    expect(
+      _.get(
+        pkg,
+        'Resources.FooProvConcLambdaAlias.Properties.ProvisionedConcurrencyConfig.ProvisionedConcurrentExecutions',
+      ),
+    ).not.to.exist;
+  });
+
+  it('lodash env', async function () {
+    process.env.FOO = 'bar';
+
+    _.set(
+      config,
+      'functions.foo.environment.FOO',
+      '${lodash(${env:FOO}):toUpper}',
+    );
+
+    await writeConfig(config);
+    await $`npx serverless package`;
+    const pkg = await loadPackage();
+
+    expect(
+      _.get(
+        pkg,
+        'Resources.FooLambdaFunction.Properties.Environment.Variables.FOO',
+      ),
+    ).to.equal('BAR');
+  });
+
+  it('lodash pc on', async function () {
+    process.env.USE_PROVISIONED_CONCURRENCY = 'true';
+
+    _.set(
+      config,
+      'functions.foo.provisionedConcurrency',
+      '${lodash(${lodash(${env:USE_PROVISIONED_CONCURRENCY}):boolean}, 1, 0):ifelse, 0}',
+    );
+
+    await writeConfig(config);
+    await $`npx serverless package`;
+    const pkg = await loadPackage();
+
+    expect(
+      _.get(
+        pkg,
+        'Resources.FooProvConcLambdaAlias.Properties.ProvisionedConcurrencyConfig.ProvisionedConcurrentExecutions',
+      ),
+    ).to.equal(1);
+  });
+
+  it('lodash pc off weirdness', async function () {
+    process.env.USE_PROVISIONED_CONCURRENCY = 'false';
+
+    _.set(
+      config,
+      'functions.foo.provisionedConcurrency',
+      '${lodash(${lodash(${env:USE_PROVISIONED_CONCURRENCY}):boolean}, 1, 0):ifelse, 0}',
+    );
+
+    await writeConfig(config);
+    await $`npx serverless package`;
+    const pkg = await loadPackage();
+
+    expect(
+      _.get(
+        pkg,
+        'Resources.FooProvConcLambdaAlias.Properties.ProvisionedConcurrencyConfig.ProvisionedConcurrentExecutions',
+      ),
+    ).not.to.exist;
+  });
+
+  it('lodash pc off reduced', async function () {
+    process.env.USE_PROVISIONED_CONCURRENCY = 'false';
+
+    _.set(
+      config,
+      'functions.foo.provisionedConcurrency',
+      '${lodash(${lodash(${env:USE_PROVISIONED_CONCURRENCY}):boolean}, 1):ifelse, 0}',
+    );
 
     await writeConfig(config);
     await $`npx serverless package`;
