@@ -10,13 +10,15 @@ Unfortunately...
 - Environment variables are ONLY delivered into `serverless.yml` as strings.
 - `provisionedConcurrency` HAS to be a number.
 
-Bollocks. And while `serverless.yml` DOES support a few inline functions (like [`strToBool`](https://www.serverless.com/framework/docs/guides/variables#read-string-variable-values-as-boolean-values)), it won't parse an integer from a string. **P.S. Also, `strToBool` doesn't seem to work very well.** 🙄 Use `boolean` as described below instead!
+Bollocks. And while `serverless.yml` DOES support a few inline functions (like [`strToBool`](https://www.serverless.com/framework/docs/guides/variables#read-string-variable-values-as-boolean-values)), it won't parse an integer from a string.
 
 Double bollocks. You can see other devs crying about the same problem [here](https://forum.serverless.com/t/problems-reading-in-integer-or-null-from-env-file-trying-to-disabled-or-set-provision-concurrency-for-development-or-production-stage/12956) and [here](https://github.com/serverless/serverless/issues/10791).
 
 Hence this plugin, which exposes the entire [`lodash`](https://lodash.com/) library (plus some other goodies) as variables in `serverless.yml`.
 
 I mean why use a fly swatter when you can use a bazooka, right? 🤓
+
+**P.S. FWIW `strToBool` doesn't seem to work very well.** 🙄 Use `boolean` as described below instead!
 
 ## Why is this even an issue?
 
@@ -56,6 +58,8 @@ someKey: ${lodash(<param1>, <param2>, ...):<functionName>}
 - Any [lodash function](https://lodash.com/docs/4.17.15).
 
 `<param1>`, `<param2>`, etc. can be just about anything, including a reference to a `lodash` function like `_.parseInt`. [Raise an issue](https://github.com/karmaniverous/serverless-lodash-plugin/issues) if you figure out how to break it!
+
+**Your output must be a primitive value, not an object or an array, or Serverless will throw an error.** This is probably a Serverless limitation, but if you have the use case [raise an issue](https://github.com/karmaniverous/serverless-lodash-plugin/issues) and I'll see what I can do.
 
 Any `undefined` output will be converted to `NULL` to avoid breaking Serverless.
 
